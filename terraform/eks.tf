@@ -20,7 +20,7 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   tags = {
-    cluster = "${var.app_name}-${var.env}-eks"
+    Cluster = "${var.app_name}-${var.env}-eks"
   }
 
  

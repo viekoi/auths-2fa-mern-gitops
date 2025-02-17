@@ -18,7 +18,7 @@ module "vpc" {
   enable_dns_support   = true
 
   tags = {
-    "kubernetes.io/cluster/${var.app_name}-${var.env}-vpc" = "shared"
+    VPC = "${var.app_name}-${var.env}-vpc"
   }
 
  public_subnet_tags = {
