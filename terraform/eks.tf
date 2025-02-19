@@ -18,12 +18,14 @@ module "eks" {
   subnet_ids      = module.vpc.private_subnets
 
   cluster_endpoint_public_access = true
+  cluster_endpoint_private_access = false
+  
+  authentication_mode = "API"
+  enable_cluster_creator_admin_permissions = true
 
   tags = {
-    Cluster = "${var.app_name}-${var.env}-eks"
+    Name = "${var.app_name}-${var.env}-eks"
   }
-
- 
 
   eks_managed_node_group_defaults = {
     ami_type       = "AL2023_x86_64_STANDARD"
@@ -32,7 +34,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     node_group = {
-      min_size     = 1
+      min_size     = 0
       max_size     = 2
       desired_size = 1
     }

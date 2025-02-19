@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -18,14 +15,19 @@ module "vpc" {
   enable_dns_support   = true
 
   tags = {
-    VPC = "${var.app_name}-${var.env}-vpc"
+    Name = "${var.app_name}-${var.env}-vpc"
   }
 
  public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
-  }
+    "kubernetes.io/cluster/${var.app_name}-${var.env}-eks" = "owned"
+    "Name" = "${var.env}-public"
+}
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/cluster/${var.app_name}-${var.env}-eks" = "owned"
+    "Name" = "${var.env}-private"
   }
+  
 }

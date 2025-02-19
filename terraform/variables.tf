@@ -3,6 +3,12 @@ variable "env" {
   type        = string
 }
 
+variable "region" {
+  description = "Region name."
+  type        = string
+  default =  "us-east-1"
+}
+
 variable "app_name" {
   description = "App name."
   type        = string
