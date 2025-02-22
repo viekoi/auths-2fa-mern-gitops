@@ -29,13 +29,13 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type       = "AL2023_x86_64_STANDARD"
-    instance_types         = ["t2.medium"]
+    instance_types         = ["t2.micro"]
   }
 
   eks_managed_node_groups = {
     node_group = {
       min_size     = 0
-      max_size     = 2
+      max_size     = 5
       desired_size = 1
     }
   }

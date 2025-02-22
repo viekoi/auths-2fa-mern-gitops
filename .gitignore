@@ -1,7 +1,7 @@
 # Ignore Vagrant files
 .vagrant/
 *.box
-
+.env
 # Ignore Terraform files
 .terraform/
 .terraform.lock.hcl
