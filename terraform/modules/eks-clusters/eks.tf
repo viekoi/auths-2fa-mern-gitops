@@ -7,6 +7,7 @@ module "eks" {
   
 
   cluster_addons = {
+    coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
