@@ -1,0 +1,77 @@
+name: 'Terraform Workflow'
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        description: 'Plan, Apply or Destroy'
+        options:
+        - plan
+        - apply
+        - destroy
+        required: true
+        default: 'plan'
+      module_path:
+        type: choice
+        description: 'Select module to run'
+        options:
+        - terraform/modules/ecr-repos
+        - terraform/modules/eks-clusters
+        required: true
+        default: 'terraform/modules/ecr-repos'
+      tf_vars_file:
+        type: string
+        description: 'Terraform vars file to use (e.g., dev.tfvars)'
+        required: true
+        default: 'dev.tfvars'
+      
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    defaults:
+      run:
+        working-directory: ${{ github.event.inputs.module_path }}
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+     
+    - name: Terraform Init
+      run: terraform init
+    
+    - name: Terraform Format
+      run: terraform fmt -check
+      continue-on-error: true
+      
+    - name: Terraform Validate
+      run: terraform validate
+    
+    - name: Terraform Plan
+      if: github.event.inputs.action == 'plan'
+      run: terraform plan -var-file='${{ github.event.inputs.tf_vars_file }}' -input=false
+    
+    - name: Terraform Apply
+      if: github.event.inputs.action == 'apply'
+      run: terraform apply -var-file='${{ github.event.inputs.tf_vars_file }}' -input=false -auto-approve
+    
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      run: terraform destroy -var-file='${{ github.event.inputs.tf_vars_file }}' -input=false -auto-approve
