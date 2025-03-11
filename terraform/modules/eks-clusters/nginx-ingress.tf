@@ -28,7 +28,6 @@ resource "helm_release" "external_nginx" {
   }
 
    depends_on = [
-    module.eks,
-    data.aws_eks_cluster_auth.eks
+    helm_release.aws_lbc
   ]
 }

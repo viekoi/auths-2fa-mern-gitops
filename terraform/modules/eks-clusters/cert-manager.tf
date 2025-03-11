@@ -13,7 +13,6 @@ resource "helm_release" "cert_manager" {
   }
 
   depends_on = [
-    module.eks,
-    data.aws_eks_cluster_auth.eks
+    helm_release.external_nginx
   ]
 }

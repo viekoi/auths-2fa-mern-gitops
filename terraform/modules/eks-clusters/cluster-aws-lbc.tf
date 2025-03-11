@@ -291,8 +291,5 @@ resource "helm_release" "aws_lbc" {
     value = module.vpc.vpc_id
   }
 
-   depends_on = [
-    module.eks,
-    data.aws_eks_cluster_auth.eks
-  ]
+   depends_on = [helm_release.cluster_autoscaler]
 }
