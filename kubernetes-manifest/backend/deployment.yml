@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: nvkhoi1807/auths-2fa-mern-be:latest
+        image: 203918859979.dkr.ecr.us-east-1.amazonaws.com/auths-2fa-mern-dev-backend:20250310105057-14
         imagePullPolicy: Always
         envFrom:
         - secretRef:
