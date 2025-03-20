@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  namespace: {{ .Values.nameSpace }}
+  name: mongodb
+  annotations:
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels: 
+        app: mongodb
+    spec:
+      serviceAccountName: secrets-manager
+      containers:
+      - name: mongodb
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["/bin/bash", "-c"]
+        args: ["echo 'Waiting for 60 seconds before starting MongoDB...'; echo 'Printing environment variables:'; printenv; sleep 60; exec docker-entrypoint.sh mongod"]
+        ports:
+        - containerPort: 27017
+        envFrom:
+        - secretRef:
+            name: database-secrets
+        volumeMounts:
+        - name: mongodb-volume
+          mountPath: /data/db
+        - name: secrets
+          mountPath: /mnt/secrets
+          readOnly: true
+      volumes: 
+      - name: mongodb-volume
+        persistentVolumeClaim:
+          claimName: mongodb-volume-claim
+       - name: secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: auths-2fa-mern-secrets

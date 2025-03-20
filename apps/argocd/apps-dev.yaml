@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: apps-prod
+  namespace: argocd
+  finalizers:
+  -  resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source: 
+    repoURL: git@github.com:viekoi/auths-2fa-mern-gitops.git
+    targetRevision: HEAD
+    path: apps/envs/dev
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - Validate=true
+    - CreateNamespace=true
+    - PrunePropagationPolicy=foreground
+
