@@ -2,7 +2,7 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = "${var.app_name}-${var.env}-eks"
+  cluster_name    = "${var.app_name}-eks"
   cluster_version = var.kubernetes_version
   
 
@@ -24,7 +24,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   tags = {
-    Name = "${var.app_name}-${var.env}-eks"
+    Name = "${var.app_name}-eks"
   }
 
   eks_managed_node_group_defaults = {
@@ -36,7 +36,7 @@ module "eks" {
     node_group = {
       min_size     = 0
       max_size     = 5
-      desired_size = 1
+      desired_size = 3
     }
   }
 }

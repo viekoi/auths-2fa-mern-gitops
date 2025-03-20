@@ -3,7 +3,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
-  name                 = "${var.app_name}-${var.env}-vpc"
+  name                 = "${var.app_name}-vpc"
   cidr                 = var.vpc_cidr_block
 
   azs                  = var.azs
@@ -15,19 +15,19 @@ module "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.app_name}-${var.env}-vpc"
+    Name = "${var.app_name}-vpc"
   }
 
  public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
-    "kubernetes.io/cluster/${var.app_name}-${var.env}-eks" = "owned"
-    "Name" = "${var.env}-public"
+    "kubernetes.io/cluster/${var.app_name}-eks" = "owned"
+    "Name" = "public"
 }
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-    "kubernetes.io/cluster/${var.app_name}-${var.env}-eks" = "owned"
-    "Name" = "${var.env}-private"
+    "kubernetes.io/cluster/${var.app_name}-eks" = "owned"
+    "Name" = "private"
   }
   
 }

@@ -1,4 +1,4 @@
-resource "aws_iam_role" "cluster_aws_lbc" {
+resource "aws_iam_role" "aws_load_balancer_controller_version" {
   name = "${module.eks.cluster_name}-cluster-aws-lbc"
 
   assume_role_policy = jsonencode({
@@ -18,7 +18,7 @@ resource "aws_iam_role" "cluster_aws_lbc" {
   })
 }
 
-resource "aws_iam_policy" "cluster_aws_lbc" {
+resource "aws_iam_policy" "aws_load_balancer_controller_version" {
   name = "${module.eks.cluster_name}-cluster-aws-lbc"
   policy = jsonencode({
   Version = "2012-10-17"
@@ -257,25 +257,25 @@ resource "aws_iam_policy" "cluster_aws_lbc" {
 })
 }
 
-resource "aws_iam_role_policy_attachment" "cluster_aws_lbc" {
-  policy_arn = aws_iam_policy.cluster_aws_lbc.arn
-  role       = aws_iam_role.cluster_aws_lbc.name
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_version" {
+  policy_arn = aws_iam_policy.aws_load_balancer_controller_version.arn
+  role       = aws_iam_role.aws_load_balancer_controller_version.name
 }
 
-resource "aws_eks_pod_identity_association" "cluster_aws_lbc" {
+resource "aws_eks_pod_identity_association" "aws_load_balancer_controller_version" {
   cluster_name    = module.eks.cluster_name
   namespace       = "kube-system"
   service_account = "aws-load-balancer-controller"
-  role_arn        = aws_iam_role.cluster_aws_lbc.arn
+  role_arn        = aws_iam_role.aws_load_balancer_controller_version.arn
 }
 
-resource "helm_release" "aws_lbc" {
+resource "helm_release" "aws_load_balancer_controller_version" {
   name = "aws-load-balancer-controller"
 
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
-  version    = var.aws_lbc_version
+  version    = var.aws_load_balancer_controller_version
 
   set {
     name  = "clusterName"

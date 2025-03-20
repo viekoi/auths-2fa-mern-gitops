@@ -3,7 +3,7 @@ module "ecr" {
 
   for_each = toset(var.repository_names)
 
-  repository_name = "${var.app_name}-${var.env}-${each.value}"
+  repository_name = "${var.app_name}-${each.value}"
 
   repository_read_write_access_arns = ["${data.aws_caller_identity.current.arn}"]
   repository_lifecycle_policy = jsonencode({
@@ -26,6 +26,6 @@ module "ecr" {
 
   tags = {
     Terraform   = "true"
-    Environment = "${var.app_name}-${var.env}-ecr-repo"
+    Environment = "${var.app_name}-ecr-repo"
   }
 }

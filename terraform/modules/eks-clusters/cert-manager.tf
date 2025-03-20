@@ -13,6 +13,6 @@ resource "helm_release" "cert_manager" {
   }
 
   depends_on = [
-    helm_release.external_nginx
+    helm_release.ingress_nginx
   ]
 }
