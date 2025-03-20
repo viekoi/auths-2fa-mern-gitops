@@ -16,8 +16,6 @@ spec:
       labels:
         role: frontend
     spec: 
-      imagePullSecrets:
-      - name: ecr-regcred
       containers:
       - name: frontend
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

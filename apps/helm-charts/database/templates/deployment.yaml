@@ -1,26 +1,24 @@
----
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+metadata:
   namespace: {{ .Values.nameSpace }}
   name: mongodb
-  annotations:
-spec: 
+  labels:
+    app: mongodb  # Added for consistency
+spec:
   replicas: 1
   selector:
     matchLabels:
       app: mongodb
   template:
     metadata:
-      labels: 
+      labels:
         app: mongodb
     spec:
-      serviceAccountName: secrets-manager
+      serviceAccountName: aws-secrets-manager
       containers:
       - name: mongodb
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["/bin/bash", "-c"]
-        args: ["echo 'Waiting for 60 seconds before starting MongoDB...'; echo 'Printing environment variables:'; printenv; sleep 60; exec docker-entrypoint.sh mongod"]
         ports:
         - containerPort: 27017
         envFrom:
@@ -32,13 +30,13 @@ spec:
         - name: secrets
           mountPath: /mnt/secrets
           readOnly: true
-      volumes: 
+      volumes:
       - name: mongodb-volume
         persistentVolumeClaim:
           claimName: mongodb-volume-claim
-       - name: secrets
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: auths-2fa-mern-secrets
+      - name: secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: database-secrets

@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: auths-mern-2fa
+  name: ingress-nginx
   namespace: {{ .Values.nameSpace }}
   annotations:
     cert-manager.io/cluster-issuer: http-01-{{ .Values.nameSpace }}
 spec:
   ingressClassName: ingress-nginx
   rules:
-    - host: dev.nguyenvietkhoi.io.vn
+    - host: {{ .Values.host }}
       http:
         paths:
           - path: /api
@@ -17,7 +17,7 @@ spec:
               service:
                 name: api
                 port:
-                  number: 8000
+                  number: 5000
           - path: /
             pathType: Prefix
             backend:
@@ -27,6 +27,6 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - dev.nguyenvietkhoi.io.vn
+        - {{ .Values.host }}
 
-      secretName: dev.nguyenvietkhoi.io.vn
+      secretName: {{ .Values.host }}

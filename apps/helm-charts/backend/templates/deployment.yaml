@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,43 +15,41 @@ spec:
       labels:
         role: api
     spec:
-      serviceAccountName: secrets-manager
-      imagePullSecrets:
-      - name: ecr-regcred
+      serviceAccountName: aws-secrets-manager
       containers:
       - name: backend
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         volumeMounts:
-            - name: secrets
-              mountPath: /mnt/secrets
-              readOnly: true
+        - name: secrets
+          mountPath: /mnt/secrets
+          readOnly: true
         envFrom:
         - secretRef:
             name: backend-secrets
         env:
-          - name: APP_ORIGIN
-            value: {{ .Values.env.appOrigin }}
-          - name: NODE_ENV
-            value: {{ .Values.env.nodeEnv }}
-          - name: PORT
-            value: "5000"
-          - name: SMTP_HOST
-            value: smtp.gmail.com
-          - name: SMTP_PORT
-            value: "465"
-          - name: SMTP_SERVICE
-            value: gmail
-          - name: JWT_EXPIRES_IN
-            value: 15m
-          - name:  JWT_REFRESH_EXPIRES_IN
-            value:  "30m"
+        - name: APP_ORIGIN
+          value: {{ .Values.env.appOrigin }}
+        - name: NODE_ENV
+          value: {{ .Values.env.nodeEnv }}
+        - name: PORT
+          value: "5000"
+        - name: SMTP_HOST
+          value: smtp.gmail.com
+        - name: SMTP_PORT
+          value: "465"
+        - name: SMTP_SERVICE
+          value: gmail
+        - name: JWT_EXPIRES_IN
+          value: 15m
+        - name: JWT_REFRESH_EXPIRES_IN  
+          value: "30m"
         ports:
         - containerPort: 5000
-   volumes:
-        - name: secrets
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: auths-2fa-mern-secrets
+      volumes:  
+      - name: secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: backend-secrets
