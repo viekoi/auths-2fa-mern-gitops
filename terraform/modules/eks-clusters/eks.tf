@@ -19,8 +19,8 @@ module "eks" {
 
   cluster_endpoint_public_access = true
   cluster_endpoint_private_access = false
-  
-  authentication_mode = "API"
+  enable_irsa         = true
+  authentication_mode = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
 
   tags = {
@@ -34,9 +34,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     node_group = {
-      min_size     = 0
-      max_size     = 5
-      desired_size = 3
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
     }
   }
 }

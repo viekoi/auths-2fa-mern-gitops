@@ -21,19 +21,19 @@ resource "aws_iam_role" "secrets_store_csi_driver_dev" {
 resource "aws_iam_policy" "secrets_store_csi_driver_dev" {
   name = "${module.eks.cluster_name}-secrets-manager-dev"
   
-  policy = jsonencode({
-    Version = "2012-10-17"
+ policy = jsonencode({
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
-        Action = [
+        Effect   = "Allow",
+        Action   = [
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
-        ]
-        Resource = ["arn:aws:secretsmanager:us-east-1:203918859979:secret:dev/backend-9yzVco","arn:aws:secretsmanager:us-east-1:203918859979:secret:dev/database-ylyoie"]
+        ],
+        Resource = ["*"],
         Condition = {
           StringEquals = {
-            "secretsmanager:ResourceTag/kubernetes-namespace" = "$${aws:PrincipalTag/kubernetes-namespace}"
+            "secretsmanager:ResourceTag/kubernetes-namespace" = "$${aws:PrincipalTag/kubernetes-namespace}",
             "secretsmanager:ResourceTag/eks-cluster-name"     = "$${aws:PrincipalTag/eks-cluster-name}"
           }
         }
@@ -50,7 +50,7 @@ resource "aws_iam_role_policy_attachment" "secrets_store_csi_driver_dev" {
 resource "aws_eks_pod_identity_association" "secrets_store_csi_driver_dev" {
   cluster_name    = module.eks.cluster_name
   namespace       = "dev"
-  service_account = "secrets-manager"
+  service_account = "aws-secrets-manager"
   role_arn        = aws_iam_role.secrets_store_csi_driver_dev.arn
 }
 
@@ -108,7 +108,7 @@ resource "aws_iam_role_policy_attachment" "secrets_store_csi_driver_prod" {
 resource "aws_eks_pod_identity_association" "secrets_store_csi_driver_prod" {
   cluster_name    = module.eks.cluster_name
   namespace       = "prod"
-  service_account = "secrets-manager"
+  service_account = "aws-secrets-manager"
   role_arn        = aws_iam_role.secrets_store_csi_driver_prod.arn
 }
 
