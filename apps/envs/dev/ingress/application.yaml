@@ -17,7 +17,7 @@ spec:
       - name: nameSpace
         value: dev
       - name: host
-        value: hieubeo.nguyenvietkhoi.io.vn
+        value: dev.nguyenvietkhoi.io.vn
     path: apps/helm-charts/ingress
     repoURL: git@github.com:viekoi/auths-2fa-mern-gitops.git
     targetRevision: main
